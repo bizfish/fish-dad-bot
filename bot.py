@@ -17,7 +17,7 @@ DATABASE_PATH = os.getenv('DATABASE_PATH')
 utc = datetime.timezone.utc
 
 # If no tzinfo is given then UTC is assumed.
-time = datetime.time(hour=16, minute=0, tzinfo=utc)
+time = datetime.time(hour=18, minute=0, tzinfo=utc)
 
 intents = discord.Intents.default()
 intents.message_content = True
