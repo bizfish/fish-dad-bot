@@ -48,7 +48,7 @@ async def daily_qotd():
         message = await get_qotd(guild["guild"])
         channel = bot.get_channel(int(guild["channel"]))
         if channel:
-            await channel.send(message)
+            await channel.send(embed=message)
 
 
 async def get_database():
@@ -92,9 +92,14 @@ async def get_qotd(guild):
         await database.update(
             "questions", {"last_displayed": now}, {"ID": ID},
         )
-        return message
     else:
-        return "No questions found for this server."
+        message = "No questions found for this server."
+    embed=discord.Embed(
+        title=f"Question of the Day for {datetime.datetime.utcnow().date()}",
+        description=f"## {message}",
+        color=0xFF5733
+    )
+    return embed
 
 # Taken from discordsuperutils to override the IDs shown per element
 def generate_embeds(
@@ -297,6 +302,6 @@ async def set_repeat(ctx, value, unit="days"):
 @commands.has_permissions(manage_messages=True)
 async def get(ctx):
     message = await get_qotd(ctx.guild.id)
-    await ctx.send(message)
+    await ctx.send(embed=message)
 
 bot.run(TOKEN)
