@@ -141,7 +141,10 @@ def generate_embeds(
     return embeds
 
 
-@bot.command()
+@bot.command(
+        help="Add one or more questions to your server's list, wrapped in quotes and separated by spaces. Adding a question that already exists resets it's last displayed date.",
+        brief="Adds new QOTDs."
+)
 @commands.has_permissions(manage_messages=True)
 async def add(ctx, *qotds):
     bad_questions = []
@@ -168,7 +171,10 @@ async def add(ctx, *qotds):
         await ctx.send(f"The question{'s' if len(bad_questions) > 1 else ''} {bad_string} were too short. Did you forget quotes?")
 
 
-@bot.command()
+@bot.command(
+        help="Shows a list of all questions for your server, with their unique ID which you can use to delete them.",
+        brief="Lists all QOTDs."
+)
 @commands.has_permissions(manage_messages=True)
 async def list(ctx):
     database = await get_database()
@@ -191,7 +197,10 @@ async def list(ctx):
     ).run()
 
 
-@bot.command()
+@bot.command(
+        help="Deletes the given question by ID. No confirmation is given, if you make a mistake, add it back :)",
+        brief="Deletes a QOTD by ID."
+)
 @commands.has_permissions(manage_messages=True)
 async def delete(ctx, id):
     database = await get_database()
@@ -207,7 +216,10 @@ async def delete(ctx, id):
         await ctx.send("No such message found.")
 
 
-@bot.command()
+@bot.command(
+        help="Enable daily QOTDs at noon central US time. Be sure to set the channel first.",
+        brief="Enables daily QOTDs."
+)
 @commands.has_permissions(manage_messages=True)
 async def enable(ctx):
     database = await get_database()
@@ -218,7 +230,9 @@ async def enable(ctx):
     await (ctx.send("Enabled question of the day."))
 
 
-@bot.command()
+@bot.command(
+        help="Disables the daily QOTDs."
+)
 @commands.has_permissions(manage_messages=True)
 async def disable(ctx):
     database = await get_database()
@@ -229,7 +243,11 @@ async def disable(ctx):
     await (ctx.send("Disabled question of the day."))
 
 
-@bot.command(name='set-channel')
+@bot.command(
+        name='set-channel',
+        help="Sets the channel where this command is sent as the designated channel for the daily QOTD, if enabled.",
+        brief="Sets QOTD channel."
+)
 @commands.has_permissions(manage_messages=True)
 async def set_channel(ctx):
     database = await get_database()
@@ -240,7 +258,11 @@ async def set_channel(ctx):
     await ctx.send(f"Set this channel {ctx.message.channel} as the target channel for questions-of-the-day.")
 
 
-@bot.command(name='set-repeat')
+@bot.command(
+        name='set-repeat',
+        help="Sets the minimum time before repeating the same question again. Use 'never' or 'none' for no repetition ever, or a number of days, months, or years. e.g. '2 months'",
+        brief="Sets minimum repeat time."
+)
 @commands.has_permissions(manage_messages=True)
 async def set_repeat(ctx, value, unit="days"):
     period = None
@@ -268,7 +290,10 @@ async def set_repeat(ctx, value, unit="days"):
         )
 
 
-@bot.command()
+@bot.command(
+        help="Shows a QOTD in this channel. It does mark the question as displayed.",
+        brief="Shows a QOTD."
+)
 @commands.has_permissions(manage_messages=True)
 async def get(ctx):
     message = await get_qotd(ctx.guild.id)
