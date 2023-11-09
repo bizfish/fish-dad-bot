@@ -76,7 +76,7 @@ async def get_qotd(guild):
         max_time = now
     else:
         if interval > 0:
-            max_time = (now - options["repeat_interval"])
+            max_time = (now - interval)
         else:
             max_time = 1
 
