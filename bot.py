@@ -8,6 +8,10 @@ from dotenv import load_dotenv
 import aiosqlite
 import discordSuperUtils
 from math import ceil
+import time as t
+
+# Sleep for 10 minutes so the router can turn on
+t.sleep(600)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
