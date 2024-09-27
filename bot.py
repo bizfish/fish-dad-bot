@@ -98,7 +98,7 @@ async def get_qotd(guild):
         )
     else:
         message = "No questions found for this server."
-    embed=discord.Embed(
+    embed = discord.Embed(
         title=f"Question of the Day for {datetime.datetime.utcnow().date()}",
         description=f"## {message}",
         color=0xFF5733
@@ -106,6 +106,8 @@ async def get_qotd(guild):
     return embed
 
 # Taken from discordsuperutils to override the IDs shown per element
+
+
 def generate_embeds(
     list_to_generate,
     title,
@@ -151,8 +153,8 @@ def generate_embeds(
 
 
 @bot.command(
-        help="Add one or more questions to your server's list, wrapped in quotes and separated by spaces. Adding a question that already exists resets it's last displayed date.",
-        brief="Adds new QOTDs."
+    help="Add one or more questions to your server's list, wrapped in quotes and separated by spaces. Adding a question that already exists resets it's last displayed date.",
+    brief="Adds new QOTDs."
 )
 @commands.has_permissions(manage_messages=True)
 async def add(ctx, *qotds):
@@ -180,9 +182,18 @@ async def add(ctx, *qotds):
         await ctx.send(f"The question{'s' if len(bad_questions) > 1 else ''} {bad_string} were too short. Did you forget quotes?")
 
 
+@add.error
+async def on_application_command_error(ctx, error: discord.DiscordException):
+    if isinstance(error, (commands.ExpectedClosingQuoteError, commands.InvalidEndOfQuotedStringError, commands.UnexpectedQuoteError)):
+        await ctx.send("Oops! You seem to have left off a closing quote somewhere, or forgotten an opening quote somewhere.")
+    else:
+        await ctx.send("Oops, some error happened and I don't know why.")
+        raise error  # Here we raise other errors to ensure they aren't ignored
+
+
 @bot.command(
-        help="Shows a list of all questions for your server, with their unique ID which you can use to delete them.",
-        brief="Lists all QOTDs."
+    help="Shows a list of all questions for your server, with their unique ID which you can use to delete them.",
+    brief="Lists all QOTDs."
 )
 @commands.has_permissions(manage_messages=True)
 async def list(ctx):
@@ -207,8 +218,8 @@ async def list(ctx):
 
 
 @bot.command(
-        help="Deletes the given question by ID. No confirmation is given, if you make a mistake, add it back :)",
-        brief="Deletes a QOTD by ID."
+    help="Deletes the given question by ID. No confirmation is given, if you make a mistake, add it back :)",
+    brief="Deletes a QOTD by ID."
 )
 @commands.has_permissions(manage_messages=True)
 async def delete(ctx, id):
@@ -226,8 +237,8 @@ async def delete(ctx, id):
 
 
 @bot.command(
-        help="Enable daily QOTDs at noon central US time. Be sure to set the channel first.",
-        brief="Enables daily QOTDs."
+    help="Enable daily QOTDs at noon central US time. Be sure to set the channel first.",
+    brief="Enables daily QOTDs."
 )
 @commands.has_permissions(manage_messages=True)
 async def enable(ctx):
@@ -240,7 +251,7 @@ async def enable(ctx):
 
 
 @bot.command(
-        help="Disables the daily QOTDs."
+    help="Disables the daily QOTDs."
 )
 @commands.has_permissions(manage_messages=True)
 async def disable(ctx):
@@ -253,9 +264,9 @@ async def disable(ctx):
 
 
 @bot.command(
-        name='set-channel',
-        help="Sets the channel where this command is sent as the designated channel for the daily QOTD, if enabled.",
-        brief="Sets QOTD channel."
+    name='set-channel',
+    help="Sets the channel where this command is sent as the designated channel for the daily QOTD, if enabled.",
+    brief="Sets QOTD channel."
 )
 @commands.has_permissions(manage_messages=True)
 async def set_channel(ctx):
@@ -268,9 +279,9 @@ async def set_channel(ctx):
 
 
 @bot.command(
-        name='set-repeat',
-        help="Sets the minimum time before repeating the same question again. Use 'never' or 'none' for no repetition ever, or a number of days, months, or years. e.g. '2 months'",
-        brief="Sets minimum repeat time."
+    name='set-repeat',
+    help="Sets the minimum time before repeating the same question again. Use 'never' or 'none' for no repetition ever, or a number of days, months, or years. e.g. '2 months'",
+    brief="Sets minimum repeat time."
 )
 @commands.has_permissions(manage_messages=True)
 async def set_repeat(ctx, value, unit="days"):
@@ -300,12 +311,13 @@ async def set_repeat(ctx, value, unit="days"):
 
 
 @bot.command(
-        help="Shows a QOTD in this channel. It does mark the question as displayed.",
-        brief="Shows a QOTD."
+    help="Shows a QOTD in this channel. It does mark the question as displayed.",
+    brief="Shows a QOTD."
 )
 @commands.has_permissions(manage_messages=True)
 async def get(ctx):
     message = await get_qotd(ctx.guild.id)
     await ctx.send(embed=message)
 
-bot.run(TOKEN)
+if __name__ == "__main__":
+    bot.run(TOKEN)
