@@ -10,8 +10,8 @@ import discordSuperUtils
 from math import ceil
 import time as t
 
-# Sleep for 10 minutes so the router can turn on
-t.sleep(600)
+# Sleep for 5 minutes so the router can turn on
+t.sleep(300)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -21,7 +21,7 @@ DATABASE_PATH = os.getenv('DATABASE_PATH')
 utc = datetime.timezone.utc
 
 # If no tzinfo is given then UTC is assumed.
-time = datetime.time(hour=18, minute=0, tzinfo=utc)
+TIME = datetime.time(hour=18, minute=0, tzinfo=utc)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -42,17 +42,26 @@ async def globally_block_dms(ctx):
     return ctx.guild is not None
 
 
-@tasks.loop(time=time)
+@tasks.loop(time=TIME)
 async def daily_qotd():
-    database = await get_database()
-    guilds = await database.select(
-        "guilds", ["guild", "channel"], {"schedule": 1}, True
-    )
-    for guild in guilds:
-        message = await get_qotd(guild["guild"])
-        channel = bot.get_channel(int(guild["channel"]))
-        if channel:
-            await channel.send(embed=message)
+    try:
+        print('Getting database...')
+        database = await get_database()
+        print('Getting guilds')
+        guilds = await database.select(
+            "guilds", ["guild", "channel"], {"schedule": 1}, True
+        )
+        if not guilds:
+            print("No guilds found with scheduled questions enabled.")
+        for guild in guilds:
+            print(f"Getting qotd for {guild}")
+            message = await get_qotd(guild["guild"])
+            channel = bot.get_channel(int(guild["channel"]))
+            if channel:
+                await channel.send(embed=message)
+                print("Sent qotd.")
+    except Exception as e:
+        print(f"Oops! Error happened. {e}")
 
 
 async def get_database():
