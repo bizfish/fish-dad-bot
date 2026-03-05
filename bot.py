@@ -175,13 +175,13 @@ def get_novelty_message(key):
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def feed(ctx):
-    message = await get_novelty_message("feed")
+    message = get_novelty_message("feed")
     await ctx.send(message)
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def unfeed(ctx):
-    message = await get_novelty_message("unfeed")
+    message = get_novelty_message("unfeed")
     await ctx.send(message)
 
 @bot.command(
