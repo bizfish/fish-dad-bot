@@ -9,6 +9,7 @@ import aiosqlite
 import discordSuperUtils
 from math import ceil
 import time as t
+import json
 
 # Sleep for 5 minutes so the router can turn on
 t.sleep(300)
@@ -17,6 +18,9 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 DATABASE_PATH = os.getenv('DATABASE_PATH')
+
+with open('feeding_phrases.json', 'r') as f:
+    novelty_messages = json.load(f)
 
 utc = datetime.timezone.utc
 
@@ -160,6 +164,24 @@ def generate_embeds(
 
     return embeds
 
+def get_novelty_message(key):
+    messages = novelty_messages.get(key, [])
+    if messages:
+        return random.choice(messages)
+    else:
+        return "Nora did a fucky wucky and forgot to put any messages here :("
+
+@bot.command()
+@commands.has_permissions(manage_messages=True)
+async def feed(ctx):
+    message = await get_novelty_message("feed")
+    await ctx.send(message)
+
+@bot.command()
+@commands.has_permissions(manage_messages=True)
+async def unfeed(ctx):
+    message = await get_novelty_message("unfeed")
+    await ctx.send(message)
 
 @bot.command(
     help="Add one or more questions to your server's list, wrapped in quotes and separated by spaces. Adding a question that already exists resets it's last displayed date.",
