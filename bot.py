@@ -18,8 +18,9 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 DATABASE_PATH = os.getenv('DATABASE_PATH')
+FEEDING_PHRASES_PATH = os.getenv('FEEDING_PHRASES_PATH')
 
-with open('feeding_phrases.json', 'r') as f:
+with open(FEEDING_PHRASES_PATH, 'r') as f:
     novelty_messages = json.load(f)
 
 utc = datetime.timezone.utc
