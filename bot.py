@@ -173,13 +173,11 @@ def get_novelty_message(key):
         return "Nora did a fucky wucky and forgot to put any messages here :("
 
 @bot.command()
-@commands.has_permissions(manage_messages=True)
 async def feed(ctx):
     message = get_novelty_message("feed")
     await ctx.send(message)
 
 @bot.command()
-@commands.has_permissions(manage_messages=True)
 async def unfeed(ctx):
     message = get_novelty_message("unfeed")
     await ctx.send(message)
