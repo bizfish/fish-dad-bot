@@ -12,7 +12,7 @@ import time as t
 import json
 
 # Sleep for 5 minutes so the router can turn on
-t.sleep(300)
+t.sleep(30)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
